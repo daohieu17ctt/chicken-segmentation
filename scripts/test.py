@@ -18,9 +18,13 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.engine import DefaultTrainer
 from detectron2.utils.visualizer import ColorMode
 
+register_coco_instances("chicken_train", {}, "train.json", "Dataset/train/img")
+dataset_dicts = DatasetCatalog.get("chicken_train")
+chicken_meta = MetadataCatalog.get("chicken_train")
 
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+cfg.MODEL.DEVICE = 'cpu'
 cfg.DATASETS.TRAIN = ()
 cfg.DATASETS.TEST = ()
 cfg.SOLVER.IMS_PER_BATCH = 2
@@ -36,8 +40,11 @@ predictor = DefaultPredictor(cfg)
 
 test_dir = os.listdir("Dataset/test")
 res_dir = "result_segmentation"
-for d in test_dir[0:5]:
+if not os.path.isdir(res_dir):
+    os.mkdir(res_dir)
+for d in test_dir:
     file_name = os.path.join("Dataset/test", d)
+    # print(file_name)
     im = cv2.imread(file_name)
     outputs = predictor(im)  # format is documented at https://detectron2.readthedocs.io/tutorials/models.html#model-output-format
     v = Visualizer(im[:, :, ::-1], 
