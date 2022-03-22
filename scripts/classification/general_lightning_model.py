@@ -1,7 +1,7 @@
 
 import pytorch_lightning as pl
 import torch
-from pytorch_lightning.metrics.functional import accuracy
+from torchmetrics.functional import accuracy
 from torch import nn
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ExponentialLR, ReduceLROnPlateau

@@ -15,9 +15,7 @@ import albumentations as A
 # pl.seed_everything(SEED)
 transform_dict = {
     'train':    transforms.Compose(
-        [   transforms.RandomResizedCrop((224,224)),
-            transforms.RandomHorizontalFlip(),
-            transforms.GaussianBlur(5),            
+        [   transforms.Resize((960,960)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                 std=[0.229, 0.224, 0.225])]
@@ -30,9 +28,10 @@ transform_dict = {
     )}
 
 
-data_set = ImageFolder("Dataset/sample_classification")
+data_set = ImageFolder("Dataset/sample_classification", transform=transform_dict['val'])
+# print(data_set[0])
 split_ratio = 0.8
-train_len = len(data_set) * split_ratio
+train_len = int(len(data_set) * split_ratio)
 val_len = len(data_set) - train_len
 train_set, val_set = torch.utils.data.random_split(data_set, [train_len, val_len])
 
